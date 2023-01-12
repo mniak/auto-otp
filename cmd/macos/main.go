@@ -16,6 +16,9 @@ func main() {
 	onReady := func() {
 		systray.SetTitle("Auto OTP")
 
+		menuTitle := systray.AddMenuItem("Click to type OTP", "")
+		menuTitle.Disable()
+
 		entries := []Entry{
 			{
 				Title:   "Demo",
