@@ -1,4 +1,4 @@
-package keysender
+package macos
 
 import (
 	"fmt"

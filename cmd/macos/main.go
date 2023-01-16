@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/mniak/auto-otp/internal/keysender"
+	"github.com/mniak/auto-otp/internal/macos"
 	"github.com/mniak/auto-otp/internal/mock"
 	"github.com/samber/lo"
 )
@@ -9,7 +9,7 @@ import (
 func main() {
 	sendKeysChan := make(chan string)
 	configProvider := mock.NewConfigProvider()
-	typingProvider := lo.Must(keysender.New())
+	typingProvider := lo.Must(macos.New())
 
 	menuEntries := lo.Must(configProvider.GetMenuEntries())
 	go func() {
