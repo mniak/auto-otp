@@ -1,43 +1,23 @@
 package main
 
 import (
-	"time"
-
-	autootp "github.com/mniak/auto-otp"
 	"github.com/mniak/auto-otp/internal/keysender"
+	"github.com/mniak/auto-otp/internal/mock"
+	"github.com/samber/lo"
 )
 
 func main() {
 	sendKeysChan := make(chan string)
+	configProvider := mock.NewConfigProvider()
+	typingProvider := keysender.New()
 
-	keySender := keysender.New()
+	menuEntries := lo.Must(configProvider.GetMenuEntries())
+
 	go func() {
 		for {
 			code := <-sendKeysChan
-			keySender.SendKeys(code)
+			typingProvider.SendKeys(code)
 		}
 	}()
-	showMenu(sendKeysChan, []autootp.MenuEntry{
-		{
-			Title: "Demo",
-			Code: func() string {
-				time.Sleep(1 * time.Second)
-				return "123-456"
-			},
-		},
-		{
-			Title: "Example",
-			Code: func() string {
-				time.Sleep(1 * time.Second)
-				return "777-888"
-			},
-		},
-		{
-			Title: "Any Site",
-			Code: func() string {
-				time.Sleep(1 * time.Second)
-				return "000-000"
-			},
-		},
-	})
+	showMenu(sendKeysChan, menuEntries)
 }
