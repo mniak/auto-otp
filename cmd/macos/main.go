@@ -18,7 +18,7 @@ func main() {
 		for {
 			code := <-sendKeysChan
 			time.Sleep(20 * time.Millisecond)
-			typingProvider.SendKeys(code)
+			typingProvider.SendKeys(code, true)
 		}
 	}()
 	showMenu(sendKeysChan, menuEntries)

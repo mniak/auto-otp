@@ -17,12 +17,15 @@ func New() (*keySender, error) {
 	return &keySender{}, nil
 }
 
-func (ks *keySender) SendKeys(keys string) error {
+func (ks *keySender) SendKeys(keys string, withEnter bool) error {
 	fmt.Println("sending keys", keys)
 	for _, k := range keys {
 		if err := pressKey(k); err != nil {
 			return err
 		}
+	}
+	if withEnter {
+		return pressEnter()
 	}
 	return nil
 }
@@ -43,6 +46,12 @@ var keyCodes = map[rune]int{
 func pressKey(key rune) error {
 	keyCode := keyCodes[key]
 	event := C.CGEventCreateKeyboardEvent(C.CGEventSourceRef(0), C.CGKeyCode(keyCode), true)
+	C.CGEventPost(C.kCGSessionEventTap, event)
+	return nil
+}
+
+func pressEnter() error {
+	event := C.CGEventCreateKeyboardEvent(C.CGEventSourceRef(0), C.CGKeyCode(36), true)
 	C.CGEventPost(C.kCGSessionEventTap, event)
 	return nil
 }
