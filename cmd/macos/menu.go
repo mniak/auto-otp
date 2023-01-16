@@ -8,7 +8,7 @@ import (
 	autootp "github.com/mniak/auto-otp"
 )
 
-func showMenu(sendKeysChan chan<- string, menuEntries []autootp.MenuEntry) {
+func showMenu(sendKeysChan chan<- string, menuEntries []autootp.OTPEntries) {
 	systray.Run(
 		func() { // tray init
 			initMenu(sendKeysChan, menuEntries)
@@ -18,14 +18,14 @@ func showMenu(sendKeysChan chan<- string, menuEntries []autootp.MenuEntry) {
 	)
 }
 
-func initMenu(sendKeysChan chan<- string, entries []autootp.MenuEntry) {
+func initMenu(sendKeysChan chan<- string, entries []autootp.OTPEntries) {
 	systray.SetTitle("Auto OTP")
 	subtitle := systray.AddMenuItem("Click to type OTP", "")
 	subtitle.Disable()
 	for _, entry := range entries {
 		menuItem := systray.AddMenuItem(fmt.Sprintf("%s - Loading...", entry.Title), "")
 		menuItem.Disable()
-		go func(mi *systray.MenuItem, e autootp.MenuEntry) {
+		go func(mi *systray.MenuItem, e autootp.OTPEntries) {
 			code := e.Code()
 			mi.SetTitle(fmt.Sprintf("%s - %s", e.Title, prettyCode(code)))
 			mi.Enable()

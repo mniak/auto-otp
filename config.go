@@ -1,10 +1,10 @@
 package autootp
 
-type MenuEntry struct {
+type OTPEntries struct {
 	Title string
 	Code  func() string
 }
 
-type ConfigProvider interface {
-	GetMenuEntries() ([]MenuEntry, error)
+type OTPEntriesProvider interface {
+	OTPEntries() ([]OTPEntries, error)
 }

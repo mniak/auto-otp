@@ -12,8 +12,8 @@ func NewConfigProvider() *simpleConfig {
 	return &simpleConfig{}
 }
 
-func (sc *simpleConfig) GetMenuEntries() ([]autootp.MenuEntry, error) {
-	return []autootp.MenuEntry{
+func (sc *simpleConfig) GetMenuEntries() ([]autootp.OTPEntries, error) {
+	return []autootp.OTPEntries{
 		{
 			Title: "Demo",
 			Code: func() string {
