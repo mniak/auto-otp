@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -9,7 +8,6 @@ func main() {
 	sendKeysChan := make(chan string)
 	go func() {
 		for {
-			fmt.Println("waiting for keys")
 			code := <-sendKeysChan
 			sendKeys(code)
 		}
