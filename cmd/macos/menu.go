@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"regexp"
 
 	"github.com/getlantern/systray"
 	autootp "github.com/mniak/auto-otp"
 )
 
-func showMenu(sendKeysChan chan<- string, menuEntries []autootp.OTPEntries) {
+func showMenu(sendKeysChan chan<- string, menuEntries []autootp.OTPEntry) {
 	systray.Run(
 		func() { // tray init
 			initMenu(sendKeysChan, menuEntries)
@@ -18,15 +19,21 @@ func showMenu(sendKeysChan chan<- string, menuEntries []autootp.OTPEntries) {
 	)
 }
 
-func initMenu(sendKeysChan chan<- string, entries []autootp.OTPEntries) {
+func initMenu(sendKeysChan chan<- string, entries []autootp.OTPEntry) {
 	systray.SetTitle("Auto OTP")
 	subtitle := systray.AddMenuItem("Click to type OTP", "")
 	subtitle.Disable()
 	for _, entry := range entries {
 		menuItem := systray.AddMenuItem(fmt.Sprintf("%s - Loading...", entry.Title), "")
 		menuItem.Disable()
-		go func(mi *systray.MenuItem, e autootp.OTPEntries) {
-			code := e.Code()
+		go func(mi *systray.MenuItem, e autootp.OTPEntry) {
+			code, err := e.Code()
+			if err != nil {
+				mi.SetTitle(fmt.Sprintf("%s - %s", e.Title, "Error!"))
+				mi.Disable()
+				log.Println(err)
+				return
+			}
 			mi.SetTitle(fmt.Sprintf("%s - %s", e.Title, prettyCode(code)))
 			mi.Enable()
 			for {

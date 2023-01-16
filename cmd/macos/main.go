@@ -3,17 +3,17 @@ package main
 import (
 	"time"
 
+	"github.com/mniak/auto-otp/internal/configfile"
 	"github.com/mniak/auto-otp/internal/macos"
-	"github.com/mniak/auto-otp/internal/mock"
 	"github.com/samber/lo"
 )
 
 func main() {
 	sendKeysChan := make(chan string)
-	entriesProvider := mock.NewConfigProvider()
+	entriesProvider := lo.Must(configfile.NewOTPEntiresProvider())
 	typingProvider := lo.Must(macos.New())
 
-	menuEntries := lo.Must(entriesProvider.GetMenuEntries())
+	menuEntries := lo.Must(entriesProvider.OTPEntries())
 	go func() {
 		for {
 			code := <-sendKeysChan

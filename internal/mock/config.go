@@ -12,27 +12,27 @@ func NewConfigProvider() *simpleConfig {
 	return &simpleConfig{}
 }
 
-func (sc *simpleConfig) GetMenuEntries() ([]autootp.OTPEntries, error) {
-	return []autootp.OTPEntries{
+func (sc *simpleConfig) GetMenuEntries() ([]autootp.OTPEntry, error) {
+	return []autootp.OTPEntry{
 		{
 			Title: "Demo",
-			Code: func() string {
+			Code: func() (string, error) {
 				time.Sleep(1 * time.Second)
-				return "123456"
+				return "123456", nil
 			},
 		},
 		{
 			Title: "Example",
-			Code: func() string {
+			Code: func() (string, error) {
 				time.Sleep(1 * time.Second)
-				return "777888"
+				return "777888", nil
 			},
 		},
 		{
 			Title: "Any Site",
-			Code: func() string {
+			Code: func() (string, error) {
 				time.Sleep(1 * time.Second)
-				return "000000"
+				return "000000", nil
 			},
 		},
 	}, nil

@@ -1,10 +1,10 @@
 package autootp
 
-type OTPEntries struct {
+type OTPEntry struct {
 	Title string
-	Code  func() string
+	Code  func() (string, error)
 }
 
 type OTPEntriesProvider interface {
-	OTPEntries() ([]OTPEntries, error)
+	OTPEntries() ([]OTPEntry, error)
 }
