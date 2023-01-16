@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"regexp"
 
 	"github.com/getlantern/systray"
 	autootp "github.com/mniak/auto-otp"
@@ -26,7 +27,7 @@ func initMenu(sendKeysChan chan<- string, entries []autootp.MenuEntry) {
 		menuItem.Disable()
 		go func(mi *systray.MenuItem, e autootp.MenuEntry) {
 			code := e.Code()
-			mi.SetTitle(fmt.Sprintf("%s - %s", e.Title, code))
+			mi.SetTitle(fmt.Sprintf("%s - %s", e.Title, formatCode(code)))
 			mi.Enable()
 			for {
 				<-mi.ClickedCh
@@ -40,4 +41,10 @@ func initMenu(sendKeysChan chan<- string, entries []autootp.MenuEntry) {
 		<-mQuit.ClickedCh
 		systray.Quit()
 	}()
+}
+
+var re = regexp.MustCompile(`(\d{3})(\d)`)
+
+func formatCode(code string) string {
+	return re.ReplaceAllString(code, "$1-$2")
 }

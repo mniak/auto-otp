@@ -18,21 +18,21 @@ func (sc *simpleConfig) GetMenuEntries() ([]autootp.MenuEntry, error) {
 			Title: "Demo",
 			Code: func() string {
 				time.Sleep(1 * time.Second)
-				return "123-456"
+				return "123456"
 			},
 		},
 		{
 			Title: "Example",
 			Code: func() string {
 				time.Sleep(1 * time.Second)
-				return "777-888"
+				return "777888"
 			},
 		},
 		{
 			Title: "Any Site",
 			Code: func() string {
 				time.Sleep(1 * time.Second)
-				return "000-000"
+				return "000000"
 			},
 		},
 	}, nil
