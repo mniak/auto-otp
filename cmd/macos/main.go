@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 func main() {
 	sendKeysChan := make(chan string)
@@ -13,16 +16,25 @@ func main() {
 	}()
 	showMenu(sendKeysChan, []MenuEntry{
 		{
-			Title:   "Demo",
-			GetCode: func() string { return "123-456" },
+			Title: "Demo",
+			GetCode: func() string {
+				time.Sleep(1 * time.Second)
+				return "123-456"
+			},
 		},
 		{
-			Title:   "Example",
-			GetCode: func() string { return "777-888" },
+			Title: "Example",
+			GetCode: func() string {
+				time.Sleep(1 * time.Second)
+				return "777-888"
+			},
 		},
 		{
-			Title:   "Any Site",
-			GetCode: func() string { return "000-000" },
+			Title: "Any Site",
+			GetCode: func() string {
+				time.Sleep(1 * time.Second)
+				return "000-000"
+			},
 		},
 	})
 }

@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/getlantern/systray"
 )
@@ -30,7 +29,6 @@ func initMenu(sendKeysChan chan<- string, entries []MenuEntry) {
 		menuItem := systray.AddMenuItem(fmt.Sprintf("%s - Loading...", entry.Title), "")
 		menuItem.Disable()
 		go func(mi *systray.MenuItem, e MenuEntry) {
-			time.Sleep(1 * time.Second)
 			code := e.GetCode()
 			mi.SetTitle(fmt.Sprintf("%s - %s", e.Title, code))
 			mi.Enable()
