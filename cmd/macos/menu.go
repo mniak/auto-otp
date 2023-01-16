@@ -4,14 +4,10 @@ import (
 	"fmt"
 
 	"github.com/getlantern/systray"
+	autootp "github.com/mniak/auto-otp"
 )
 
-type MenuEntry struct {
-	Title   string
-	GetCode func() string
-}
-
-func showMenu(sendKeysChan chan<- string, menuEntries []MenuEntry) {
+func showMenu(sendKeysChan chan<- string, menuEntries []autootp.MenuEntry) {
 	systray.Run(
 		func() { // tray init
 			initMenu(sendKeysChan, menuEntries)
@@ -21,15 +17,15 @@ func showMenu(sendKeysChan chan<- string, menuEntries []MenuEntry) {
 	)
 }
 
-func initMenu(sendKeysChan chan<- string, entries []MenuEntry) {
+func initMenu(sendKeysChan chan<- string, entries []autootp.MenuEntry) {
 	systray.SetTitle("Auto OTP")
 	subtitle := systray.AddMenuItem("Click to type OTP", "")
 	subtitle.Disable()
 	for _, entry := range entries {
 		menuItem := systray.AddMenuItem(fmt.Sprintf("%s - Loading...", entry.Title), "")
 		menuItem.Disable()
-		go func(mi *systray.MenuItem, e MenuEntry) {
-			code := e.GetCode()
+		go func(mi *systray.MenuItem, e autootp.MenuEntry) {
+			code := e.Code()
 			mi.SetTitle(fmt.Sprintf("%s - %s", e.Title, code))
 			mi.Enable()
 			for {
