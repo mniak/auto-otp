@@ -26,7 +26,7 @@ func initMenu(sendKeysChan chan<- string, entries []autootp.MenuEntry) {
 		menuItem := systray.AddMenuItem(fmt.Sprintf("%s - Loading...", entry.Title), "")
 		menuItem.Disable()
 		go func(mi *systray.MenuItem, e autootp.MenuEntry) {
-			code := sanitizeCode(e.Code())
+			code := e.Code()
 			mi.SetTitle(fmt.Sprintf("%s - %s", e.Title, prettyCode(code)))
 			mi.Enable()
 			for {
@@ -41,12 +41,6 @@ func initMenu(sendKeysChan chan<- string, entries []autootp.MenuEntry) {
 		<-mQuit.ClickedCh
 		systray.Quit()
 	}()
-}
-
-var reSanitize = regexp.MustCompile(`\D`)
-
-func sanitizeCode(code string) string {
-	return reSanitize.ReplaceAllString(code, "")
 }
 
 var rePrettify = regexp.MustCompile(`(\d{3})(\d)`)
