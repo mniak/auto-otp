@@ -9,10 +9,9 @@ import (
 func main() {
 	sendKeysChan := make(chan string)
 	configProvider := mock.NewConfigProvider()
-	typingProvider := keysender.New()
+	typingProvider := lo.Must(keysender.New())
 
 	menuEntries := lo.Must(configProvider.GetMenuEntries())
-
 	go func() {
 		for {
 			code := <-sendKeysChan
