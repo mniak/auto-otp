@@ -2,11 +2,16 @@
 
 main:
 	# Please specify one of the following rules:
-	#   gui-mac
+	#   app-mac
 	#   clean
 
-gui-mac:
-	cd build/gui/macos && make
+app-mac:
+	touch cmd/gui/macos
+	cd build/gui/macos && $(MAKE)
+
+install-mac:
+	touch cmd/gui/macos
+	cd build/gui/macos && $(MAKE) install
 
 clean:
 	rm -r artifacts

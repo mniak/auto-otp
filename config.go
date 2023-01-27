@@ -2,7 +2,7 @@ package autootp
 
 type OTPEntry struct {
 	Title string
-	Code  func() (string, error)
+	Code  func() (chan string, error)
 }
 
 type OTPEntriesProvider interface {

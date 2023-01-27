@@ -1,6 +1,7 @@
 package configfile
 
 import (
+	"log"
 	"time"
 
 	"github.com/pquerna/otp/totp"
@@ -15,6 +16,20 @@ type ConfigOTPEntry struct {
 	OTPSecret string `mapstructure:"secret"`
 }
 
-func (e ConfigOTPEntry) GetOTP() (string, error) {
-	return totp.GenerateCode(e.OTPSecret, time.Now())
+func (e ConfigOTPEntry) GetOTP() (chan string, error) {
+	codeChan := make(chan string)
+	code, err := totp.GenerateCode(e.OTPSecret, time.Now())
+	if err != nil {
+		return nil, err
+	}
+	codeChan <- code
+	go func() {
+		time.Sleep(900 * time.Millisecond)
+		code, err := totp.GenerateCode(e.OTPSecret, time.Now())
+		if err != nil {
+			log.Fatalln("OTP generation failed", err)
+		}
+		codeChan <- code
+	}()
+	return codeChan, nil
 }

@@ -19,28 +19,39 @@ func showMenu(sendKeysChan chan<- string, menuEntries []autootp.OTPEntry) {
 	)
 }
 
+func addMenuItem(entry autootp.OTPEntry, sendKeysChan chan<- string) *systray.MenuItem {
+	menuItem := systray.AddMenuItem(fmt.Sprintf("%s - Loading...", entry.Title), "")
+	menuItem.Disable()
+	codeChan, err := entry.Code()
+	if err != nil {
+		menuItem.SetTitle(fmt.Sprintf("%s - %s", entry.Title, "Error!"))
+		menuItem.Disable()
+		log.Println(err)
+		return menuItem
+	}
+	var currentCode string
+	go func() {
+		for {
+			currentCode = <-codeChan
+			menuItem.SetTitle(fmt.Sprintf("%s - %s", entry.Title, prettyCode(currentCode)))
+			menuItem.Enable()
+		}
+	}()
+	go func() {
+		for {
+			<-menuItem.ClickedCh
+			sendKeysChan <- currentCode
+		}
+	}()
+	return menuItem
+}
+
 func initMenu(sendKeysChan chan<- string, entries []autootp.OTPEntry) {
 	systray.SetTitle("Auto OTP")
 	subtitle := systray.AddMenuItem("Click to type OTP", "")
 	subtitle.Disable()
 	for _, entry := range entries {
-		menuItem := systray.AddMenuItem(fmt.Sprintf("%s - Loading...", entry.Title), "")
-		menuItem.Disable()
-		go func(mi *systray.MenuItem, e autootp.OTPEntry) {
-			code, err := e.Code()
-			if err != nil {
-				mi.SetTitle(fmt.Sprintf("%s - %s", e.Title, "Error!"))
-				mi.Disable()
-				log.Println(err)
-				return
-			}
-			mi.SetTitle(fmt.Sprintf("%s - %s", e.Title, prettyCode(code)))
-			mi.Enable()
-			for {
-				<-mi.ClickedCh
-				sendKeysChan <- code
-			}
-		}(menuItem, entry)
+		addMenuItem(entry, sendKeysChan)
 	}
 	systray.AddSeparator()
 	mQuit := systray.AddMenuItem("Quit", "")
