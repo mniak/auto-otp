@@ -1,15 +1,24 @@
 # .SILENT:
 
-main:
+OSNAME = $(shell uname -s)
+
+build: build-gui
+install: install-gui
+
+build-gui: build-gui-$(OSNAME)
+install-gui: install-gui-$(OSNAME)
+
+help:
 	# Please specify one of the following rules:
-	#   app-mac
+	#   build
+	#   install
 	#   clean
 
-app-mac:
+build-gui-Darwin:
 	touch cmd/gui/macos
-	cd build/gui/macos && $(MAKE)
+	cd build/gui/macos && $(MAKE) build
 
-install-mac:
+install-gui-Darwin:
 	touch cmd/gui/macos
 	cd build/gui/macos && $(MAKE) install
 

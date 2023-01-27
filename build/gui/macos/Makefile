@@ -9,6 +9,12 @@ TARGET_PKGINFO=$(APPBUNDLE)/Contents/PkgInfo
 TARGET_ICONS=$(APPBUNDLE)/Contents/Resources/$(APPNAME).icns
 TARGET_BINARY=$(APPBUNDLE)/Contents/MacOS/$(BINNAME)
 
+
+build: $(APPBUNDLE)
+install: build
+	cp -rf $(APPBUNDLE) /Applications
+
+
 $(APPBUNDLE): $(TARGET_INFOPLIST) $(TARGET_PKGINFO) $(TARGET_ICONS) $(TARGET_BINARY)
 	rm -rf $(TEMPDIR)
 	echo "MacOS GUI application build successfully"
@@ -45,6 +51,5 @@ $(TARGET_BINARY):
 	mkdir -p $$(dirname $(TARGET_BINARY))
 	go build -o $(TARGET_BINARY) ../../../cmd/gui/macos
 
-
-install: $(APPBUNDLE)
-	cp -rf $(APPBUNDLE) /Applications
+$(EXECUTABLE): prog.c
+	gcc prog.c
